@@ -1,4 +1,13 @@
-extends layout
+doctype html
+html
+	head
+		title WAR! 
+		script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
+		script(src='javascripts/war.js')
+		link(rel='stylesheet', href='/stylesheets/war-style.css')
 
-block content
-  p Hello world
+	body
+		div(id = "content")
+			textarea(id = "text")
+			div(id = "result")
+
