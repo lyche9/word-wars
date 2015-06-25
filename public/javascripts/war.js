@@ -1,21 +1,30 @@
 function wordCount( val ){
-    return {
-        charactersNoSpaces : val.replace(/\s+/g, '').length,
-        characters         : val.length,
-        words              : val.match(/\S+/g).length,
-        lines              : val.split(/\r*\n/).length
-    }
+    return val.match(/\S+/g).length
 }
 
-
 $(document).ready(function(){
+  var socket = io();
+  var curr = 0;
   $("#text").on('input', function(){
-      
+    
     var c = wordCount( this.value );
+
+    if (c != curr) {
+      $('#result').html(
+          "<br>Words: "+ c 
+      );
       
-    $('#result').html(
-        "<br>Words: "+ c.words 
-    );
+      socket.emit('msg', c);
+      curr = c;
+    }
       
   });
+
+  socket.on('msg', function(msg) {
+    $('#serverresult').html(
+      "<br>Words according to server: " + msg
+    );
+  });
+
 });
+

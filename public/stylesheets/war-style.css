@@ -20,7 +20,10 @@ a {
 	resize:none;
 }
 
-#result {
+div#result_box {
 	height: 100%;
 
+}
+p {
+	margin: 0px;
 }
