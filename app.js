@@ -12,16 +12,43 @@ var users = require('./routes/users');
 var app = require('express')();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-io.on('connection', function(socket){ 
-    console.log('Connection!');
-    socket.on('msg', function(msg){
-      console.log(msg);
-      socket.emit('msg', msg);
+
+var rooms = {};
+
+io.on('connection', function(socket) { 
+    console.log('SERVER: Connection!');
+
+    //add user to given room
+    socket.on('add_user', function(room) {
+
+      if(!(room in rooms)) {
+        rooms[room] = {
+          "Name" : room,
+          "Users" : {}
+        };
+      }
+      rooms[room].Users[socket.id] = 0;
+
+      socket.room = room;
+      socket.join(room); 
+      socket.emit('join_room', rooms[room]);
+      socket.broadcast.to(room).emit('add_user', socket.id, rooms[room]);
+
+      console.log('SERVER: Added user ' + socket.id + ' to room ' + room);
+    });
+
+    //update user score
+    socket.on('update_count', function(count) {
+      rooms[socket.room].Users[socket.id] = count;
+      console.log('Server: ' + socket.id + '\'s score is ' + count);
+
+      socket.broadcast.to(socket.room).emit('update_count', rooms[socket.room]);
+      socket.emit('update_count', rooms[socket.room]);
     });
 });
 
 server.listen(3000, function () {
-   console.log('Server listening...');
+   console.log('SERVER: Server listening...');
 });
 
 
@@ -39,7 +66,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
-
 
 
 // catch 404 and forward to error handler
