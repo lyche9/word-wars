@@ -22,10 +22,11 @@ a {
 	outline: none;
 }
 
-div#result_box {
+#result_box {
 	height: 100%;
 	overflow: hidden;
 }
+
 p {
 	margin: 0px;
 }

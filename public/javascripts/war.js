@@ -87,9 +87,10 @@ $(document).ready(function(){
   });
 });
 
-function renderChart(data){
-    var chartData = data;
-    var ctx = document.getElementById("chart").getContext("2d");
-    var chart = new Chart(ctx)
-    chart.Pie(chartData, {animation : false});
+function renderChart( data ) {
+  $("#canvas-wrapper").html("").html('<canvas id="chart" width = "400" height = "400"></canvas>');
+  var chartData = data;
+  var ctx = document.getElementById("chart").getContext("2d");
+  var chart = new Chart(ctx)
+  chart.Pie(chartData, {animation : false});
 }
