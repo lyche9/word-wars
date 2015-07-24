@@ -5,6 +5,7 @@ html
 		script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
 		script(src='javascripts/war.js')
 		script(src='/socket.io/socket.io.js')
+		script(src='javascripts/Chart.min.js')
 		link(rel='stylesheet', href='/stylesheets/war-style.css')
 
 	body
@@ -13,4 +14,10 @@ html
 			div(id = "result_box")
 				p(id = "result")
 				p(id = "serverresult")
+				br
+				canvas(
+					id = "chart"
+					width = "400"
+					height = "400"
+				)
 

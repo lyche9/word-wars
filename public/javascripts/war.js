@@ -10,6 +10,41 @@ function setWordCountDisplay( myscore ) {
 
 var scores = {};
 
+//Update scoreboard
+function updateScoreboard(scoreboard) {
+  scores = scoreboard;
+}
+
+//List scores  
+function listScores() {
+  result = "<br><br>Scoreboard: <br>"
+  for (user in scores["Users"]) {
+    result += "<br>" + user + ": " + scores["Users"][user] + " words";
+  } 
+  $('#serverresult').html(result);
+}
+
+function getRandomColor() {
+  var letters = '0123456789ABCDEF'.split('');
+  var color = '#';
+  for (var i = 0; i < 6; i++ ) {
+      color += letters[Math.round(Math.random() * 15)];
+  }
+  return color;
+}
+
+//format scores for chartjs
+function formatScores() {
+  var data = [];
+  for (user in scores["Users"]) {
+    var obj = {};
+    obj["value"] = scores["Users"][user] + 1;
+    obj["color"] = getRandomColor();
+    data.push(obj);
+  }
+  return data; 
+}
+
 $(document).ready(function(){
   var socket = io();
 
@@ -20,6 +55,10 @@ $(document).ready(function(){
   socket.on('join_room', function(scoreboard, id) {
     updateScoreboard(scoreboard);
     setWordCountDisplay(0);
+    listScores();
+
+    var scoreData = formatScores();
+    renderChart(scoreData);
   });
 
   //Be alerted that a new user has joined
@@ -41,25 +80,16 @@ $(document).ready(function(){
 
   //Receive updated scoreboard from server
   socket.on('update_count', function(scoreboard) {
-    updateScoreboard(scoreboard)
-    // for (user in scoreboard["Users"]) {
-    //   console.log(user + " has written " + scoreboard["Users"][user] + " words.");  
-    // } 
-    listScores(scoreboard);
+    updateScoreboard(scoreboard);
+    listScores();
+    var scoreData = formatScores();
+    renderChart(scoreData);
   });
-
-//Update scoreboard
-  function updateScoreboard(scoreboard) {
-    scores = scoreboard;
-  }
-//List users
-//List scores  
-  function listScores(scoreboard) {
-    result = "<br><br>Scoreboard: <br>"
-    for (user in scoreboard["Users"]) {
-      result += "<br>" + user + ": " + scoreboard["Users"][user] + " words";
-    } 
-    $('#serverresult').html(result);
-  }
-
 });
+
+function renderChart(data){
+    var chartData = data;
+    var ctx = document.getElementById("chart").getContext("2d");
+    var chart = new Chart(ctx)
+    chart.Pie(chartData, {animation : false});
+}
