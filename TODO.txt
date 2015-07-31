@@ -1,0 +1,19 @@
+============
+TODO
+============
+
+Functionality
+-------------------------------------
+> Timer disables textarea
+> Keep track of sessions/users
+> ID color doesn't change
+> Shortlink for different rooms
+
+Additional Features
+-------------------------------------
+> Chat room between matches
+
+Enhancements
+-------------------------------------
+> Prettify all the things!
+
