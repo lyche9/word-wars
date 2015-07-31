@@ -14,16 +14,19 @@ a {
 
 #text {
 	height: 100%;
-	width: 65%;
+	width: 60%;
 	margin: 0px;
 	float: left;
 	resize:none;
+	border: none;
+	outline: none;
 }
 
-div#result_box {
+#result_box {
 	height: 100%;
-
+	overflow: hidden;
 }
+
 p {
 	margin: 0px;
 }
