@@ -9,9 +9,13 @@ function setWordCountDisplay( myscore ) {
 }
 
 var scores = {};
+var colors = {};
 
 //Update scoreboard
-function updateScoreboard(scoreboard) {
+function updateScoreboard( scoreboard ) {
+  for (user in scoreboard["Users"])
+    if (!colors[user]) 
+      colors[user] = stringToColor(user); 
   scores = scoreboard;
 }
 
@@ -33,13 +37,26 @@ function getRandomColor() {
   return color;
 }
 
+var stringToColor = function( str ) {
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    var color = '#';
+    for (var i = 0; i < 3; i++) {
+        var value = (hash >> (i * 8)) & 0xFF;
+        color += ('00' + value.toString(16)).substr(-2);
+    }
+    return color;
+}
+
 //format scores for chartjs
 function formatScores() {
   var data = [];
   for (user in scores["Users"]) {
     var obj = {};
     obj["value"] = scores["Users"][user] + 1;
-    obj["color"] = getRandomColor();
+    obj["color"] = colors[user];
     data.push(obj);
   }
   return data; 
@@ -52,7 +69,8 @@ $(document).ready(function(){
   socket.emit('add_user', "default");
 
   //Join room, get the current scoreboard
-  socket.on('join_room', function(scoreboard, id) {
+  socket.on('join_room', function(scoreboard) {
+    colors[socket.id] = stringToColor(socket.id);
     updateScoreboard(scoreboard);
     setWordCountDisplay(0);
     listScores();
